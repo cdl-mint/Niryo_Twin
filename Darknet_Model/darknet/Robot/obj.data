@@ -1,0 +1,6 @@
+classes = 2
+train  = Robot/train.txt
+valid  = Robot/test.txt
+names = Robot/obj.names
+backup = Robot/backup
+
