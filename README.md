@@ -7,9 +7,6 @@ The required files and properties to run for physical twin are:
 - Scripts under `Physical_Twin_File/` folder
 
 ##### Method to run:
-
-### Steps:
-
 Sure! Here is the rephrased version of the given instructions in markdown format:
 
 1. Before starting, make sure to have the updated firmware of the Niryo Ned robot. You can obtain the firmware from the [Niryo Studio website](https://docs.niryo.com/dev/pyniryo/v1.1.2/en/source/setup/installation.html).
@@ -55,8 +52,6 @@ scenarios = [
 - urdf and .py under `Digital_Twin_Webots/` folder
 
 #### Method to run:
-
-### Steps:
 1. Open Webots which is installed in windows or linux and load the `Niryo_Ned.wbt` under creating new wrold. Or else create new Niryo Ned robot and load the `Niryo_Ned.urdf` file which is available under `Digital_twin_Files.
 2. On the right side in code section load the `webots_ned_controll.py` under `Digital_Twin_Webots`.
 3. And run the `webots_ned_controll.py` file.
@@ -178,3 +173,23 @@ python get_logs.py 1 1 # 1 for diffrent iterations for scenario 1
 ## Robot Object Detection and grasping Model:
 For this please refer to this seperate repository:
 https://github.com/cdl-mint/Robot-Arm-for-Sorting-Mechanism-using-ROS-and-YOLOv4
+
+Method to run: Please refer to the README.md file in the above repo.
+- Requirements: Docker File from this Repo
+- Place it in gpu server and create docker container from the docker file.
+
+### Docker for Niryo socks sorting:
+- This will create the xhost which allows the docker to access the host display.
+```
+xhost local:docker
+```
+
+- **Running the docker file:**
+```py
+sudo docker run -it --rm --privileged --env="DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --device="/dev/video0:/dev/video0" cdl:socks
+```
+
+- **Running the model without entering into docker:**
+```
+sudo docker run -it --rm --privileged --env="DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --device="/dev/video0:/dev/video0" cdl:socks_storing2 python3 inference/only_camera_inference.py
+```
