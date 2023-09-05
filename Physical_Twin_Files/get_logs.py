@@ -1,59 +1,55 @@
-from niryo_robot_python_ros_wrapper.ros_wrapper import *
-import sys
+#!/usr/bin/env python
+
 import rospy
-import time
-from datetime import datetime
-import argparse
-import os
+from sensor_msgs.msg import JointState
+import datetime
 
+last_time = None
+previous_positions = None
 
-# Parsing command line arguments for scenario and iteration
-parser = argparse.ArgumentParser(description='Choose a scenario and iteration for the robot movement.')
-parser.add_argument('scenario', type=int, choices=range(1, 6),
-                    help='an integer for the scenario (1-5)')
-parser.add_argument('iteration', type=int, help='an integer for the iteration')
-args = parser.parse_args()
-scenario = args.scenario
-iteration = args.iteration
+def joint_states_callback(msg):
+    global last_time, previous_positions
+    # Get the positions of joint_1 to joint_6
+    positions = dict(zip(msg.name, msg.position))
+    joint_1_pos = positions['joint_1']
+    joint_2_pos = positions['joint_2']
+    joint_3_pos = positions['joint_3']
+    joint_4_pos = positions['joint_4']
+    joint_5_pos = positions['joint_5']
+    joint_6_pos = positions['joint_6']
 
+    # Check if there are changes in any one of the joints
+    if previous_positions is None or \
+       joint_1_pos != previous_positions[0] or \
+       joint_2_pos != previous_positions[1] or \
+       joint_3_pos != previous_positions[2] or \
+       joint_4_pos != previous_positions[3] or \
+       joint_5_pos != previous_positions[4] or \
+       joint_6_pos != previous_positions[5]:
+        
+        # Print the joint positions as a list with three decimal precision
+        print("[{:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}]".format(
+            joint_1_pos, joint_2_pos, joint_3_pos, joint_4_pos, joint_5_pos, joint_6_pos))
+        
+        # Save the joint positions to the file
+        with open("scenario_4.txt", "a") as file:
+            file.write("[{:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}]\n".format(
+                joint_1_pos, joint_2_pos, joint_3_pos, joint_4_pos, joint_5_pos, joint_6_pos))
+        
+        last_time = datetime.datetime.now()
+        previous_positions = (joint_1_pos, joint_2_pos, joint_3_pos, joint_4_pos, joint_5_pos, joint_6_pos)
 
+def main():
+    rospy.init_node('joint_states_listener', anonymous=True)
+    rospy.Subscriber("/joint_states", JointState, joint_states_callback)
+    rate = rospy.Rate(30)  # 60Hz
 
-rospy.init_node('niryo_blockly_interpreted_code2')
-n = NiryoRosWrapper()
-rospy.timer.Rate(30)
+    try:
+        while not rospy.is_shutdown():
+            rospy.spin()
+            rate.sleep()
+    except KeyboardInterrupt:
+        print("Exiting...")
 
-prev_pos_list = n.get_joints()
-tolerance = 0.01  # Adjust this value as needed
-t1 = datetime.now()
-
-def is_moved(current, previous, tolerance):
-    return any(abs(c - p) > tolerance for c, p in zip(current, previous))
-
-log_file = "scenario_{scenario}_iteration_{iteration}.txt".format(scenario=scenario, iteration=iteration)
-
-if os.path.exists(log_file):
-    os.remove(log_file)
-    print('Existing file is deleted')
-else:
-    pass
-
-try:
-    while not rospy.is_shutdown():
-        while True:
-            rospy.sleep(0.06)
-            current_pos_list = [round(num, 4) for num in n.get_joints()]
-            if is_moved(current_pos_list, prev_pos_list, tolerance):  # Checking if position has changed
-                t2 = datetime.now()
-                log_line = str(current_pos_list) + ', ' + str((t2 - t1).microseconds/1000) + '\n'  # prepare line to be logged
-                t1 = t2
-                with open(log_file, 'a') as file:  # Change 'w' to 'a' for append mode
-                    file.write(log_line)  # write the log line to file
-                print(log_line)
-                prev_pos_list = current_pos_list  # Updating the previous position
-
-        print('Logs written to ' + log_file)
-
-except KeyboardInterrupt:
-    print('Keyboard interrupt detected, exiting...')
-    print(rospy.is_shutdown())
-    sys.exit()
+if __name__ == '__main__':
+    main()
