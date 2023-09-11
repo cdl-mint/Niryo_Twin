@@ -1,4 +1,20 @@
 # Niryo_Twin
+# Contents:
+- [Niryo PT and Simulation Data](#niryo-pt-and-simulation-data)
+    - [1. Physical Twin:](#1-physical-twin)
+        - [Method to run:](#method-to-run)
+    - [2. Digital Twin (Simulation - Webots):](#2-digital-twin-simulation---webots)
+        - [Requirements:](#requirements)
+        - [Method to run:](#method-to-run-1)
+    - [3. Digital Twin (Simulation - Gazebo):](#3-digital-twin-simulation---gazebo)
+        - [Requirements:](#requirements-1)
+        - [ROS Melodic Installation:](#ros-melodic-installation)
+        - [Method to run:](#method-to-run-2)
+- [Robot Object Detection and grasping Model:](#robot-object-detection-and-grasping-model)
+    - [Docker for Niryo socks sorting:](#docker-for-niryo-socks-sorting)
+- [Collaborative Robot Arm:](#collaborative-robot-arm)
+    - [Requirements:](#requirements-2)
+    - [Method to run:](#method-to-run-3)
 
 # Niryo PT and Simulation Data
 ### 1. Physical Twin:
@@ -170,7 +186,7 @@ python get_logs.py 1 1 # 1 for diffrent iterations for scenario 1
 ```
 - The logs will be saved in the current directory with the name `scenario1_run_1.txt` format.
 
-## Robot Object Detection and grasping Model:
+# Robot Object Detection and grasping Model:
 For this please refer to this seperate repository:
 https://github.com/cdl-mint/Robot-Arm-for-Sorting-Mechanism-using-ROS-and-YOLOv4
 
@@ -192,4 +208,23 @@ sudo docker run -it --rm --privileged --env="DISPLAY" --volume="/tmp/.X11-unix:/
 - **Running the model without entering into docker:**
 ```
 sudo docker run -it --rm --privileged --env="DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --device="/dev/video0:/dev/video0" cdl:socks_storing2 python3 inference/only_camera_inference.py
+```
+# Collaborative Robot Arm:
+This part used to transfer objects from one conveyor to another conveyor. 
+- The code is available in `Collaborative_Robot_Arm/` folder.
+
+### Requirements:
+- 2 Niryo Ned robots
+- IP's of both the robots
+- `Collaborative_Robot_Arm/` folder
+- `pyniryo` lybrary installed on seperate computer
+
+### Method to run:
+1. Get a seperate computer and install `pyniryo` library. if not installed please enter this terminal command:
+```
+pip install pyniryo
+```
+2. Run the .py file in the `Collaborative_Robot_Arm/` tranfer_object_between_robots.py. eg:
+```py
+python transfer_object_between_robots.py
 ```
