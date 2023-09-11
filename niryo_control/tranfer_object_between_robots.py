@@ -1,87 +1,62 @@
 from pyniryo import *
 
-# -- IP address of Niryo Robot --
-robot1_ip = "192.168.0.101"
-robot2_ip = "192.168.0.103"
 
-# Ipaddress of Niryo Robot
+# Robot IP's
+robot1_ip = "192.168.0.101"
+robot2_ip = "192.168.0.108"
+
+# Robot Initialisatios
 robot1 = NiryoRobot(robot1_ip)
 robot2 = NiryoRobot(robot2_ip)
 
-# -- Calibrating Robots
+# Robot Calibrations
 robot1.calibrate_auto()
 robot2.calibrate_auto()
 
-# -- updating tool
+# Robot Tool Updates
 robot1.update_tool()
 robot2.update_tool()
 
-# pickup robot1
-robot1_pick_pose = [0.643, -0.369, -0.328, -0.021, -0.858, -0.017]
-robot1_give_pose = [1.5, 0.191, -0.164, 0.16, 0.04, 0]
-robot2_give_pose = [1.5, 0.191, -0.164, 0.16, 0.04, 0]
-robot2_place_pose = [-0.643, -0.369, -0.328, -0.021, -0.858, -0.017]
+def homing_robots():
+    robot1.move_joints(robot_home)
+    robot2.move_joints(robot_home)
 
-while True:
-    robot1.open_gripper()
+def obj_exchange():
     robot1.move_joints(robot1_pick_pose)
     robot1.close_gripper()
-    
-    robot2.give_pose(robot2_give_pose)
-    robot2.open_gripper()
-    
-    robot1.move_joints(robot1_give_pose)
+    robot1.move_joints(exchange_pose1)
+    robot2.move_joints(exchange_pose2)
+    robot1.move_joints(about_to_exchange1)
+    robot2.move_joints(about_to_exchange2)
     robot2.close_gripper()
     robot1.open_gripper()
-    
-    robot1.move_joints(robot1_pick_pose)
-    
     robot2.move_joints(robot2_place_pose)
+    robot1.move_joints(robot_home)
     robot2.open_gripper()
-    break
+    robot2.move_joints(robot_home)
+    return True
 
-    
-    
-########## testing code ##########
-# Initializing ROS node
-"""
-rospy.init_node('niryo_ned_example_python_ros_wrapper')
 
-conveyor1 = n.set_conveyor()
-conveyor2 = n.set_conveyor()
+# Predefined Positions
+robot_home = [0,0,0,0,0,0]
 
-def run_conveyor(robot, conveyor):
-    robot.control_conveyor(conveyor, bool_control_on=True,
-                           speed=50, direction=ConveyorDirection.FORWARD)
+robot1_pick_pose = [0.643, -0.40, -0.328, -0.021, -0.858, -1.0]
+robot2_place_pose = [-0.643, -0.369, -0.328, -0.021, -0.858, -0.017]
 
-# -- Setting variables
-sensor_pin_id = PinID.GPIO_1A
+exchange_pose1 = [-1.65, 0.191, -0.164, -1.6, 0.04, 0]
+exchange_pose2 = [1.65, 0.15, -0.164, 0.0, 0.04, 0]
 
-catch_nb = 5
+about_to_exchange1 = [-1.65, 0.08, -0.05, -1.6, 0.04, 0]
+about_to_exchange2 = [1.65, 0.08, -0.10, 0.0, 0.04, 0]
 
-# The pick pose
-pick_pose = [1.5, -0.8., 0, 0, -0.7, 0]
-# The Place pose
-pick_pose = [-1.5, -0.8., 0, 0, -0.7, 0]
+# Unused positions
+robot1_give_pose = [1.5, 0.191, -0.164, 0.16, 0.04, 0]
+robot2_give_pose = [1.5, 0.191, -0.164, 0.16, 0.04, 0]
 
-# -- MAIN PROGRAM
-niryo_robot = NiryoRosWrapper()
-niryo_robot.set_arm_max_velocity(20)
-niryo_robot.update_tool()
 
-# Activating connexion with conveyor
-conveyor_id = niryo_robot.set_conveyor()
-
-for i in range(catch_nb):
-    run_conveyor(niryo_robot, conveyor_id)
-    while niryo_robot.digital_read(sensor_pin_id) == PinState.LOW:
-        niryo_robot.wait(0.1)
-
-    # Stopping robot motor
-    niryo_robot.control_conveyor(conveyor_id, True, 0, ConveyorDirection.FORWARD)
-    # Making a pick & place
-    niryo_robot.pick_and_place(pick_pose, place_pose)
-
-# Deactivating connexion with conveyor
-niryo_robot.unset_conveyor(conveyor_id)
-"""
+try:
+    homing_robots()
+    obj_exchange()
+finally:
+    robot1.close_connection()
+    robot2.close_connection()
