@@ -41,11 +41,15 @@ python get_logs.py 1 1  # for scenario 1 iteration 1
 
 1. This will create a log file named `scenario1_iteration1.txt` in the current folder.
 
-2. If you want to include your own scenario just add your scenario to the `robot_movement.py` file and call it with the appropriate keyword argument. eg:
-
+2. If you want to include your own scenario just add your scenario to the `custom_robot_movement.py` file under `TODO: section`and call it with the appropriate keyword argument. eg:
+```
+python custom_robot_movement.py 1
+```
+eg:
 ```
 # Scenario 1
 scenarios = [
+    # Your custom scenarios:
                 [
                     [0, 0, 0, 0, 0, 0],
                     [0.096, -0.592, 0.673, -1.738, -1.499, 0.003],
@@ -54,10 +58,13 @@ scenarios = [
                     [0.000, 0.500, -1.250, 0.000, -0.003, 0.003],
                     [0, 0, 0, 0, 0, 0]
                 ],
-                <add your won scenario>
             ]
 ```
-1. To Add custom scenario, add the scenario to the `robot_movement.py` file and call it with the appropriate keyword argument.
+1. To Add custom scenario, add the scenario to the `custom_robot_movement.py` file Under `TODO: section` and call it with the appropriate keyword argument. eg:
+
+```
+python custom_robot_movement.py 1
+```
 
 
 ### 2. Digital Twin (Simulation - Webots):
@@ -72,7 +79,8 @@ scenarios = [
 2. On the right side in code section load the `webots_ned_controll.py` under `Digital_Twin_Webots`.
 3. And run the `webots_ned_controll.py` file.
 4. Logs will be automatically saved in current dir with name `scenario1_run_1.txt` format. (on default it will run each scenarios and 4 iterations)
-5. If you want to add your own scenario just add your scenario to the `webots_ned_controll.py` file and call it with the appropriate keyword argument.
+
+5. If you want to add your own scenario just add your scenario to the `custom_webots_ned_controll.py` under `TODO: section` and run the file inside webots compiler. 
 
 
 ### 3. Digital Twin (Simulation - Gazebo):
