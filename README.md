@@ -1,35 +1,52 @@
-# Niryo_Twin
-# Contents:
+
+# Niryo Twin
+- [Niryo Twin](#niryo-twin)
 - [Niryo PT and Simulation Data](#niryo-pt-and-simulation-data)
     - [1. Physical Twin:](#1-physical-twin)
+        - [About:](#about)
+        - [Requirements:](#requirements)
         - [Method to run:](#method-to-run)
     - [2. Digital Twin (Simulation - Webots):](#2-digital-twin-simulation---webots)
-        - [Requirements:](#requirements)
-        - [Method to run:](#method-to-run-1)
+      - [About:](#about-1)
+      - [Requirements:](#requirements-1)
+      - [Method to run:](#method-to-run-1)
     - [3. Digital Twin (Simulation - Gazebo):](#3-digital-twin-simulation---gazebo)
-        - [Requirements:](#requirements-1)
-        - [ROS Melodic Installation:](#ros-melodic-installation)
-        - [Method to run:](#method-to-run-2)
+      - [About:](#about-2)
+      - [Requirements:](#requirements-2)
+      - [ROS Melodic Installation:](#ros-melodic-installation)
+      - [Method to run:](#method-to-run-2)
 - [Robot Object Detection and grasping Model:](#robot-object-detection-and-grasping-model)
-    - [Docker for Niryo socks sorting:](#docker-for-niryo-socks-sorting)
+        - [About:](#about-3)
+        - [Requirements:](#requirements-3)
+    - [Method for Docker Niryo socks sorting:](#method-for-docker-niryo-socks-sorting)
 - [Collaborative Robot Arm:](#collaborative-robot-arm)
-    - [Requirements:](#requirements-2)
+        - [About:](#about-4)
+    - [Requirements:](#requirements-4)
     - [Method to run:](#method-to-run-3)
 
+
 # Niryo PT and Simulation Data
+Here we are trying to simulate and compare how a physical twin model is compared with its own digital simulations this could help us to find any kind of analogies between the physical and digital twins.
+For the physical twin we are using Niryo Ned robot and for the digital twin we are using Webots and Gazebo simulation environments.
 ### 1. Physical Twin:
+##### About:
+In this part of Physical Twin we are trying to control the Niryo Ned robot and on parallel we are trying to get the positional log data from this robot.
+##### Requirements:
 The required files and properties to run for physical twin are:
-- Niryo Ned robot
+- Niryo Ned robot (physical_form)
+- Installed lattest firmware on Raspberry pi inside Niryo
+  if not please download x64 bit image and flash the fromware: here is [the link](https://niryo.com/download-products/)
 - Scripts under `Physical_Twin_File/` folder
 
 ##### Method to run:
-Sure! Here is the rephrased version of the given instructions in markdown format:
-
 1. Before starting, make sure to have the updated firmware of the Niryo Ned robot. You can obtain the firmware from the [Niryo Studio website](https://docs.niryo.com/dev/pyniryo/v1.1.2/en/source/setup/installation.html).
 
-2. The scenarios are defined within the `robot_movement.py` file. You can run any scenario by calling the script with the appropriate keyword arguments, ranging from (1 to 4). For example, to execute scenario 1, use the following command: `robot_movement.py 1`.
+2. The script under `Physical_Twin_File/robot_movement.py`  is used to control the Niryo Ned robot. To run the script, you need to install the `pyniryo` library. You can install the library using the following command: `pip install pyniryo`.
+   
+3. There are some predefined scenarios that are defined within the `robot_movement.py` file (which helps the robot to move to list of predefined positions). You can run any by calling the script with the appropriate keyword arguments, ranging from (1 to 4). For example, to execute scenario 1, use the following command: `robot_movement.py 1`.
 
-3. For logging the data, you can use the `get_logs.py` script with two keyword arguments. The first argument represents the scenario number (1 to 4), and the second argument represents the iteration number (1 to 5). To log data for scenario 1 and iteration 1, use the command: `get_logs.py 1 1`.
+4. For logging the data, you can use the `get_logs.py` script with two keyword arguments. The first argument represents the scenario number (1 to 4), and the second argument represents the iteration number (1 to 5). To log data for scenario 1 and iteration 1, use the command: `get_logs.py 1 1`.
+> Please note that parameter used in `get_logs.py` script should be same as the parameter used in `robot_movement.py` script. and parameter used in 'get_logs.py' doestn't have any effect on the robot movement. these parameters are used to save the logs in the appropriate name format.
 
 ```py
 # To run scenario 1
@@ -39,17 +56,27 @@ python robot_movement.py 1
 python get_logs.py 1 1  # for scenario 1 iteration 1
 ```
 
-1. This will create a log file named `scenario1_iteration1.txt` in the current folder.
+4. This will create a log file named `scenario1_iteration1.txt` in the current folder.
 
-2. If you want to include your own scenario just add your scenario to the `custom_robot_movement.py` file under `TODO: section`and call it with the appropriate keyword argument. eg:
-```
-python custom_robot_movement.py 1
-```
+5. If you want to run your own scenario just add your scenario to the `custom_robot_movement.py` file under `TODO: section` as python list format and call it with the appropriate keyword argument. eg:
+
 eg:
 ```
-# Scenario 1
+# List of scenarios:
+scenarios = [[position_1],[position_2],[position_3],...]
+```
+
+here each position is a list of 6 joint angles in radians. eg for position_1: [m1, m2, m3, m4, m5, m6] in float format.
+To call any custom scenario it must be called with appropriate numbering scheme. eg:
+to call the first custom scenario use the following command:
+```
+python custom_robot_movement.py 1
+``` 
+
+Below is a actual example of custom scenario:
+```
+# list of scenarios:
 scenarios = [
-    # Your custom scenarios:
                 [
                     [0, 0, 0, 0, 0, 0],
                     [0.096, -0.592, 0.673, -1.738, -1.499, 0.003],
@@ -60,14 +87,10 @@ scenarios = [
                 ],
             ]
 ```
-1. To Add custom scenario, add the scenario to the `custom_robot_movement.py` file Under `TODO: section` and call it with the appropriate keyword argument. eg:
-
-```
-python custom_robot_movement.py 1
-```
-
 
 ### 2. Digital Twin (Simulation - Webots):
+#### About:
+Here we are setting up our first simulation environment for the Niryo Ned robot. We are using Webots simulation environment for this. We are using the URDF model of Niryo Ned robot or `.wbt` webots file under `Digtal_Twin_Webots/`  to control the robot and get the positional data from the robot. the following will explain its requirements and method to run.
 
 #### Requirements:
 - Webots 2023a https://github.com/cyberbotics/webots/releases/tag/R2023a
@@ -75,15 +98,19 @@ python custom_robot_movement.py 1
 - urdf and .py under `Digital_Twin_Webots/` folder
 
 #### Method to run:
-1. Open Webots which is installed in windows or linux and load the `Niryo_Ned.wbt` under creating new wrold. Or else create new Niryo Ned robot and load the `Niryo_Ned.urdf` file which is available under `Digital_twin_Files.
-2. On the right side in code section load the `webots_ned_controll.py` under `Digital_Twin_Webots`.
-3. And run the `webots_ned_controll.py` file.
+1. Open Webots which is installed in windows or linux and load the `Niryo_Ned.wbt` under creating new wrold Or else create new Niryo Ned robot and load the `Niryo_Ned.urdf` file which is available under `Digital_twin_Files.
+2. Or else just open the `Niryo_Ned_Webot.wbt` file under `Digital_Twin_Webots/Niryo_Ned_Webot.wbt` folder.
+   
+3. On the right side in code section load the `webots_ned_controll.py` under `Digital_Twin_Webots`. And run the `webots_ned_controll.py` file.
+   
 4. Logs will be automatically saved in current dir with name `scenario1_run_1.txt` format. (on default it will run each scenarios and 4 iterations)
 
 5. If you want to add your own scenario just add your scenario to the `custom_webots_ned_controll.py` under `TODO: section` and run the file inside webots compiler. 
 
 
 ### 3. Digital Twin (Simulation - Gazebo):
+#### About:
+Until now we finished our first simulation tool and sucessfully got the logs, In this section we are going to set up our second simulation environment for the Niryo Ned robot. For this we are using Gazebo simulation environment. 
 
 #### Requirements:
 - Ubuntu 18.04 
@@ -195,30 +222,51 @@ python get_logs.py 1 1 # 1 for diffrent iterations for scenario 1
 - The logs will be saved in the current directory with the name `scenario1_run_1.txt` format.
 
 # Robot Object Detection and grasping Model:
-For this please refer to this seperate repository:
-https://github.com/cdl-mint/Robot-Arm-for-Sorting-Mechanism-using-ROS-and-YOLOv4
+##### About:
+In this section we are going to use the Niryo Ned robot to detect the socks and sort them based on their color. (i.e. Socks sorting mechanism using Niryo Ned robot).
 
-Method to run: Please refer to the README.md file in the above repo.
+The camera captures the image from the desk and detect the color of the socks and based on the color the robot will pick it and place it in the appropriate bin either left or right.
+
+##### Requirements:
+ - Our Trained model repository: [link](https://github.com/cdl-mint/Robot-Arm-for-Sorting-Mechanism-using-ROS-and-YOLOv4)
+ - Physical Niryo Ned robot
+ - A GPU Server with GPU (preferably Nvidia GPU RTX3060)
+ - Camera (preferably webcam)
+ - Perfect Lighting conditions
+
+Please refer to the README.md file in the above repo. [link](https://github.com/cdl-mint/Robot-Arm-for-Sorting-Mechanism-using-ROS-and-YOLOv4)
 - Requirements: Docker File from this Repo
 - Place it in gpu server and create docker container from the docker file.
 
-### Docker for Niryo socks sorting:
-- This will create the xhost which allows the docker to access the host display.
+### Method for Docker Niryo socks sorting:
+1. Place the Docker file on the GPU server and create docker container from the docker file available under `Darknet_Model/darknet/Robot/Dockerfile`.
+
+```
+sudo docker build -t cdl:socks .
+```
+
+1. after run the below terminal command, this will create the xhost which allows the docker to access the host display.
 ```
 xhost local:docker
 ```
 
-- **Running the docker file:**
+1. **Running the docker file:**
 ```py
 sudo docker run -it --rm --privileged --env="DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --device="/dev/video0:/dev/video0" cdl:socks
 ```
 
-- **Running the model without entering into docker:**
+1. **Running the model without entering into docker:**
 ```
 sudo docker run -it --rm --privileged --env="DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --device="/dev/video0:/dev/video0" cdl:socks_storing2 python3 inference/only_camera_inference.py
 ```
+
+> Remember to plug the camera before running the docker file.
+
 # Collaborative Robot Arm:
-This part used to transfer objects from one conveyor to another conveyor. 
+##### About:
+In this section we are going to use two Niryo Ned robots to transfer objects from one conveyor to another conveyor (The object will be exchaned between two robot arm).
+
+using this part used to transfer objects from one conveyor to another conveyor. 
 - The code is available in `Collaborative_Robot_Arm/` folder.
 
 ### Requirements:
