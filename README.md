@@ -44,8 +44,22 @@ The required files and properties to run for physical twin are:
 2. The script under `Physical_Twin_File/robot_movement.py`  is used to control the Niryo Ned robot. To run the script, you need to install the `pyniryo` library. You can install the library using the following command: `pip install pyniryo`.
    
 3. There are some predefined scenarios that are defined within the `robot_movement.py` file (which helps the robot to move to list of predefined positions). You can run any by calling the script with the appropriate keyword arguments, ranging from (1 to 4). For example, to execute scenario 1, use the following command: `robot_movement.py 1`.
+> Note: 
+> Explanation of Scenario and Position:
+> we refer `scenario` as a instance of predefined `positions`. eg: scenario 1 is a list of predefined positions for eg. 5, where robot will move to each position one by one. 
+> Eg:
+> `scenario : [[position_1],[position_2],[position_3],...]`
+> `position1 : [m1, m2, m3, m4, m5, m6]` in float format.
 
-4. For logging the data, you can use the `get_logs.py` script with two keyword arguments. The first argument represents the scenario number (1 to 4), and the second argument represents the iteration number (1 to 5). To log data for scenario 1 and iteration 1, use the command: `get_logs.py 1 1`.
+1. For logging the data, you can use the `get_logs.py {param_1} {param_2}` script with two keyword arguments. 
+
+To log data for scenario $n^{th}$ and iteration $n^{th}$, use the command: `get_logs.py {param_1} {param_2}`.
+
+`param_1` represents the scenario number (1 to 4), 
+`param_2` represents the iteration number (1 to 5). 
+
+To log data for scenario 1 and iteration 1, use the command: `get_logs.py 1 1`.
+> Note: 
 > Please note that parameter used in `get_logs.py` script should be same as the parameter used in `robot_movement.py` script. and parameter used in 'get_logs.py' doestn't have any effect on the robot movement. these parameters are used to save the logs in the appropriate name format.
 
 ```py
@@ -58,17 +72,17 @@ python get_logs.py 1 1  # for scenario 1 iteration 1
 
 4. This will create a log file named `scenario1_iteration1.txt` in the current folder.
 
-5. If you want to run your own scenario just add your scenario to the `custom_robot_movement.py` file under `TODO: section` as python list format and call it with the appropriate keyword argument. eg:
+5. If you want to run your own scenario just add your scenario to the `custom_robot_movement.py` file under `TODO: ADD YOUR SCENARIOS HERE: ` section. Explaination of syntax of custom scenario and position is given below.
 
 eg:
 ```
-# List of scenarios:
+# Syntax of custom scenario:
 scenarios = [[position_1],[position_2],[position_3],...]
 ```
 
-here each position is a list of 6 joint angles in radians. eg for position_1: [m1, m2, m3, m4, m5, m6] in float format.
-To call any custom scenario it must be called with appropriate numbering scheme. eg:
-to call the first custom scenario use the following command:
+here each position is a list of 6 joint angles in radians. eg for `position_1: [m1, m2, m3, m4, m5, m6]` in float format.
+
+To call any custom scenario it must be called with appropriate numbering scheme. eg: to call the first custom scenario use the following command:
 ```
 python custom_robot_movement.py 1
 ``` 
