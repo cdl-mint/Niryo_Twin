@@ -1,7 +1,10 @@
 
 # Niryo Twin
 - [Niryo Twin](#niryo-twin)
-- [Niryo PT and Simulation Data](#niryo-pt-and-simulation-data)
+- [Intro:](#intro)
+    - [Key Takeaway:](#key-takeaway)
+    - [knowledge which are recommended to have before starting:](#knowledge-which-are-recommended-to-have-before-starting)
+- [Comparison of Physical and Digital Twins:](#comparison-of-physical-and-digital-twins)
     - [1. Physical Twin:](#1-physical-twin)
         - [About:](#about)
         - [Requirements:](#requirements)
@@ -24,8 +27,24 @@
     - [Requirements:](#requirements-4)
     - [Method to run:](#method-to-run-3)
 
+# Intro:
+This is the repository where you can divide to 3 parts, First one would be comparison of physical and digital twins, Second one would be Robot Object Detection and grasping Model and the third one would be Collaborative Robot Arm.
 
-# Niryo PT and Simulation Data
+1. Comparison of different twin models eg. Niryo ned robot in our case and its digital simulation in Webots and Gazebo.
+2. Robot Object Detection and grasping Model, here we have a pipeline where you can create a dataset and train the model with our proposed pipeline (eg. socks:default, cubes, complex shapes etc.) and use the trained model to detect the object and grasp it.
+3. After part one and 2, this part Collaborative Robot Arm, here we are using two Niryo Ned robots to transfer objects from one conveyor to another conveyor (The object will be exchaned between two robot arm).
+
+### Key Takeaway:
+After sucessfully implementing each part of the repository, you will be able to understand how to create and compare the digital twins, how to create a Machine Learing model to detect objects and integrate to the robot and finally use the model to detect and grasp and transfer objects from one robot to another robot.
+
+>Each Part has its individual explanation and requirements and method to run, if you want to implement any of the part please follow the instructions given below. (For implementation make sure to have appropriate operating system and dependencies installed on your system).
+
+### knowledge which are recommended to have before starting:
+- Knowledge of python
+- Knowledge of ROS-1 (mododic or noetic)
+- basic knowledge of pytorch and training ML model
+
+# Comparison of Physical and Digital Twins:
 Here we are trying to simulate and compare how a physical twin model is compared with its own digital simulations this could help us to find any kind of analogies between the physical and digital twins.
 For the physical twin we are using Niryo Ned robot and for the digital twin we are using Webots and Gazebo simulation environments.
 ### 1. Physical Twin:
